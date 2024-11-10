@@ -1,7 +1,12 @@
+import asyncio
 import datetime
 import logging
 import logging.config
-from email_context.app.email_send_command_handler import EmailSendCommand, SMTPServiceError
+import uuid
+
+from email_context.app.email_send_command_handler import SendEmailCommand, SMTPServiceError
+from email_context.app.generate_pdf_report_command_handler import GeneratePDFReportCommand
+from email_context.app.load_report_data_query_handler import ReportDataQuery
 from email_context.container import Container
 from email_context.config.settings import Settings
 
@@ -18,8 +23,11 @@ class App:
 
         self.container.config.from_dict(self.settings.model_dump())
         self.send_email = self.container.send_email_handler()
+        self.report_data_generator = self.container.report_data_generator()
+        self.generate_pdf_report = self.container.generate_pdf_report()
 
-    def run_app(self):
+    async def run_app(self):
+
         html = """
         <!DOCTYPE html>
         <html lang="pt-BR">
@@ -71,13 +79,21 @@ class App:
         </body>
         </html>
         """
-        command = EmailSendCommand(
+        command = SendEmailCommand(
             sender=self.settings.SMTP_USERNAME,
             recipients=self.settings.SMTP_RECEIVERS.split(','),
             subject="Relatório Pagar - Dia " + datetime.datetime.now().strftime("%d-%m-%Y"),
             content=html,
             attach=None
         )
+
+        query = ReportDataQuery()
+
+        res = await self.report_data_generator.handler(query)
+
+        self.generate_pdf_report.handler(command=GeneratePDFReportCommand(
+            data=res
+        ))
 
         res = self.send_email.handler(
             command
@@ -89,10 +105,10 @@ class App:
         logger.log(logging.INFO, res)
 
 
-def main():
+async def main():
     app = App()
-    app.run_app()
+    await app.run_app()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

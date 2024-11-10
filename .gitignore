@@ -1,8 +1,3 @@
-email_context/app/report_data_load_query_handler.py
-email_context/domain/handlers/query_handler.py
-email_context/domain/query.py
-email_context/domain/report_item.py
-
 .env
 .env.test
 venv_dev

@@ -10,7 +10,7 @@ from email_context.infra.services.oracle_data_extractor_service import OracleDat
 from email_context.infra.services.smtp_mail_service import SMTPMailService
 
 
-class EmailSendCommand(Command):
+class SendEmailCommand(Command):
     sender: str
     recipients: List[str]
     subject: str
@@ -26,14 +26,14 @@ class SMTPServiceError(Error):
         return f"SMTPServiceError: {self.message}"
 
 
-class EmailSendCommandHandler(CommandHandler):
+class SendEmailCommandHandler(CommandHandler):
 
     def __init__(self, data_extractor: OracleDataExtractorService, mail_service: SMTPMailService) -> [str,
                                                                                                       SMTPServiceError]:
         self._data_extractor = data_extractor
         self._mail_service = mail_service
 
-    def handler(self, command: EmailSendCommand) -> Any:
+    def handler(self, command: SendEmailCommand) -> Any:
         html = """
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -85,8 +85,6 @@ class EmailSendCommandHandler(CommandHandler):
 </body>
 </html>
 """
-
-        self._data_extractor.extract_data_to_report()
 
         email = Email(
             sender=command.sender,
