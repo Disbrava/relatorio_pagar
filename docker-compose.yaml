@@ -1,8 +1,21 @@
 version: "3"
 services:
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: email_delivery_reports
+    restart: unless-stopped
+    ports:
+      - ${DOCKER_WEB_PORT-7000}:80
+    env_file:
+      - .env
+
+
   mailhog:
     image: mailhog/mailhog:latest
     restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "1025:1025"
+      - "8025:8025"
