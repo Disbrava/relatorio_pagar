@@ -7,5 +7,5 @@ from app.domain.commands import Command
 class CommandHandler(ABC):
 
     @abstractmethod
-    def handler(self, command: Command) -> Any:
+    async def handler(self, command: Command) -> Any:
         pass

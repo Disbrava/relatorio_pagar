@@ -36,7 +36,7 @@ class SMTPMailService(MailServiceInterface):
             servidor_email.sendmail(email.sender, email.recipients, message.as_string())
             return f"Email has sent to Receivers!"
 
-    def __build_message(self, email: Email) -> Any:
+    def __build_message(self, email: Email) -> MIMEMultipart:
         message = MIMEMultipart()
         message["From"] = email.sender
         message["Subject"] = email.subject

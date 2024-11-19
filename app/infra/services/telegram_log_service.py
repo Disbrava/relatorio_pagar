@@ -1,10 +1,10 @@
-import logging
+from logging import LogRecord, Handler
 import os
 
 import requests
 
 
-class TelegramLogService(logging.Handler):
+class TelegramLogService(Handler):
     def __init__(self, api_url: str, bot_token: str, chat_id: str):
         super().__init__()
         self.bot_token = bot_token
@@ -12,7 +12,7 @@ class TelegramLogService(logging.Handler):
         self.api_url = api_url
         self.env_name = os.getenv('ENVIRONMENT')
 
-    def emit(self, record):
+    def emit(self, record: LogRecord) -> None:
         log_entry = self.format(record)
 
         payload = {

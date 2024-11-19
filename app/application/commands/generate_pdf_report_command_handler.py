@@ -18,8 +18,8 @@ class GeneratePDFReportCommandHandler(CommandHandler):
     def __init__(self, data_extractor: OracleDataExtractorServiceService):
         self._data_extractor = data_extractor
 
-    def handler(self, command: GeneratePDFReportCommand) -> Union[UUID, Error]:
-        result = self._data_extractor.extract_data_to_report(command.data)
+    async def handler(self, command: GeneratePDFReportCommand) -> Union[UUID, Error]:
+        result = await self._data_extractor.extract_data_to_report(command.data)
 
         if not isinstance(result, UUID):
             return Error(result)

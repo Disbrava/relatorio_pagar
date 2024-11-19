@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from app.domain.commands import Command
 from app.domain.email import Email
@@ -28,12 +28,10 @@ class SMTPServiceError(Error):
 
 class SendEmailCommandHandler(CommandHandler):
 
-    def __init__(self, data_extractor: OracleDataExtractorServiceService, mail_service: SMTPMailService) -> [str,
-                                                                                                             SMTPServiceError]:
-        self._data_extractor = data_extractor
+    def __init__(self, mail_service: SMTPMailService) -> [str, SMTPServiceError]:
         self._mail_service = mail_service
 
-    def handler(self, command: SendEmailCommand) -> Any:
+    async def handler(self, command: SendEmailCommand) -> Union[str, SMTPServiceError]:
 
         email = Email(
             sender=command.sender,

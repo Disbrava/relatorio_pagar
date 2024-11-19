@@ -11,12 +11,19 @@ Foi solicitado que fosse enviado para o email de dois gestores um relatório ana
    -  [x] Montar um relatório a parter dos dados da consulta em  pdf
    -  [x] Enviar o arquivo com o relatório gerado para o email de dois gestores
    -  [x] Ambiente de Testes
-   -  [ ] Fila para gerenciar os envios de arquivos
-   -  [ ] Gerencidor de Logs para Manter registro dos envios
-   -  [ ] Agendador de eventos para realizar a tarefa de envio de forma automática
+   -  [x] Envio de logs de erro para o Telegram
+   -  [x] Agendador de eventos para realizar a tarefa de envio de forma automática
 
 # Ferramentas utilizadas
 
  - Python 3.8
  - Oracle Database
  - Pycharm IDE
+ - Docker
+
+# Bibliotecas e Frameworks fundamentais
+
+ - Para operações com bancos de dados  [SQLAlchemy](https://www.sqlalchemy.org/)
+ - Para agendamento de execução de jobs [APScheduler](https://pypi.org/project/APScheduler/)
+ - Para tratamento de dados [Pandas](https://pandas.pydata.org/docs/index.html)
+ - Para manipulaçao de arquivos pdf [Reportlab](https://docs.reportlab.com/)

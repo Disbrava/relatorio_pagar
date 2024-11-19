@@ -90,24 +90,26 @@ class App:
         </body>
         </html>
         """
-        command = SendEmailCommand(
-            sender=self.settings.SMTP_USERNAME,
-            recipients=self.settings.SMTP_RECEIVERS.split(','),
-            subject="Relatório Pagar - Dia " + datetime.datetime.now().strftime("%d-%m-%Y"),
-            content=html,
-            attach=None
+
+        # Query to get data
+        res = await self.report_data_generator.handler(
+            ReportDataQuery()
         )
 
-        query = ReportDataQuery()
-
-        res = await self.report_data_generator.handler(query)
-
-        self.generate_pdf_report.handler(command=GeneratePDFReportCommand(
+        # Command to generate PDF
+        await self.generate_pdf_report.handler(command=GeneratePDFReportCommand(
             data=res
         ))
 
-        res = self.send_email.handler(
-            command
+        #Command to Send Email
+        res = await self.send_email.handler(
+            SendEmailCommand(
+                sender=self.settings.SMTP_USERNAME,
+                recipients=self.settings.SMTP_RECEIVERS.split(','),
+                subject="Relatório Pagar - Dia " + datetime.datetime.now().strftime("%d-%m-%Y"),
+                content=html,
+                attach=None
+            )
         )
 
         if isinstance(res, SMTPServiceError):
@@ -119,24 +121,27 @@ class App:
 async def main():
     app = App()
     await app.run_app()
-    #logger.log(logging.INFO, 'Email Disparado!')
 
 
+if __name__ == "__main__":
+    asyncio.run(main())
+
+'''
 @retry(stop=stop_after_attempt(5), wait=wait_fixed(10))
-def job():
+def job_send_mail():
     asyncio.run(main())
 
 
-def job_retries():
+def job_send_mail_with_retries():
     try:
-        job()
+        job_send_mail()
     except Exception as e:
         logger.log(logging.ERROR, f"Envio de Email falhou após várias tentativas: {e}")
 
 
 scheduler = BackgroundScheduler()
 
-scheduler.add_job(job_retries, 'cron', hour=8, minute=0)
+scheduler.add_job(job_send_mail_with_retries, 'cron', hour=8, minute=0)
 
 scheduler.start()
 
@@ -147,3 +152,4 @@ try:
 except (KeyboardInterrupt, SystemExit) as e:
     logger.error(f'O scheduler parou. Erro: {e}')
     scheduler.shutdown()
+'''

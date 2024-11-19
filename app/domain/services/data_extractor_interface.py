@@ -7,5 +7,5 @@ from abc import ABC, abstractmethod
 class DataExtractorServiceInterface(ABC):
 
     @abstractmethod
-    def extract_data_to_report(self, data: Dict[str, pd.DataFrame]) -> Union[UUID, str]:
+    async def extract_data_to_report(self, data: Dict[str, pd.DataFrame]) -> Union[UUID, str]:
         pass
