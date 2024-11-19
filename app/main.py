@@ -123,10 +123,6 @@ async def main():
     await app.run_app()
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
-
-'''
 @retry(stop=stop_after_attempt(5), wait=wait_fixed(10))
 def job_send_mail():
     asyncio.run(main())
@@ -152,4 +148,3 @@ try:
 except (KeyboardInterrupt, SystemExit) as e:
     logger.error(f'O scheduler parou. Erro: {e}')
     scheduler.shutdown()
-'''
