@@ -5,13 +5,10 @@ from app.application.commands.generate_pdf_report_command_handler import Generat
 from app.application.queries.load_report_data_query_handler import ReportDataLoadQueryHandler
 from app.data.report_repository import ReportRepository
 from app.database.async_database import AsyncDatabase
-from app.database.sync_database import SyncDatabase
 from app.infra.services.oracle_data_extractor_service import OracleDataExtractorServiceService
 from app.infra.services.smtp_mail_service import SMTPMailService
 from app.infra.services.telegram_log_service import TelegramLogService
 
-
-# Import other Contexts Here and Define dependencies inside the container
 
 class Container(containers.DeclarativeContainer):
     __self__ = providers.Self()
@@ -19,7 +16,7 @@ class Container(containers.DeclarativeContainer):
     # Config Env Vars
     config = providers.Configuration()
 
-    # Provide Databse Instance
+    # Provide Database Instance
     async_database: providers.Provider[AsyncDatabase] = providers.Singleton(
         AsyncDatabase, db_url=config.DATABASE_URL
     )
@@ -61,11 +58,8 @@ class Container(containers.DeclarativeContainer):
         data_extractor=oracle_data_extractor
     )
 
-
     # Query
     report_data_generator = providers.Factory(
         ReportDataLoadQueryHandler,
         report_repository=report_repo
     )
-
-
